@@ -83,7 +83,8 @@ let command =
       +> anon (maybe_with_default "." ("<directory to serve>" %: string))
     )
     (fun port root () -> 
-       (Server.create (Tcp.on_port port) (handler ~root)) >>= fun _ ->
+       (Server.create ~on_handler_error:`Ignore
+          (Tcp.on_port port) (handler ~root)) >>= fun _ ->
        Deferred.never () )
 
 let () = Command.run command
