@@ -19,10 +19,11 @@ module Html = struct
   let ul x = "<ul>\n" ^ x ^ "\n</ul>"
   let render_page {directory; files; directories} = 
     let full_path f = "/" ^ (Filename.concat directory f) in
+    let listify paths = 
+      List.map ~f:(fun f -> link ~href:(full_path f) ~text:f |> li) paths
+      |> String.concat ~sep:"\n" |> ul in
     let body =
-      List.map ~f:(fun f -> link ~href:(full_path f) ~text:f |> li) files
-      |> String.concat ~sep:"\n"
-      |> ul
+      (listify directories) ^ "\n<hr>\n" ^ (listify files)
     in page ~title:directory ~body
 end
 
