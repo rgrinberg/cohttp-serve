@@ -53,7 +53,7 @@ let valid_path ~root path =
       | _, _ -> false
     in loop Filename.(parts root, parts path)
   with Unix.Unix_error (_, _, _) -> 
-    printf "Could not find %s in %s due to error\n" path root; false
+    printf "Could not find %s in %s\n" path root; false
 
 let handler ~root ~body:_ sock req = 
   let uri = Cohttp.Request.uri req in
@@ -83,6 +83,7 @@ let command =
       +> anon (maybe_with_default "." ("<directory to serve>" %: string))
     )
     (fun port root () -> 
+       printf "Serving '%s' on port %d\n" root port;
        (Server.create ~on_handler_error:`Ignore
           (Tcp.on_port port) (handler ~root)) >>= fun _ ->
        Deferred.never () )
