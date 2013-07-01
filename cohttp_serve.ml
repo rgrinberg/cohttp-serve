@@ -55,6 +55,9 @@ let valid_path ~root path =
   with Unix.Unix_error (_, _, _) -> 
     printf "Could not find %s in %s\n" path root; false
 
+let not_found path =
+  Server.respond_with_string ~code:`Not_found ("Not found: " ^ path)
+
 let handler ~root ~body:_ sock req = 
   let uri = Cohttp.Request.uri req in
   let render_dir p = 
@@ -66,12 +69,11 @@ let handler ~root ~body:_ sock req =
     let fullpath = Filename.concat root path in
     let open Core.Std in (* TODO : blocking calls *)
     begin match Sys.is_file fullpath with
-      | `Unknown -> failwith "404?"
+      | `Unknown -> not_found path
       | `Yes -> fullpath |> Server.respond_with_file
       | `No -> render_dir fullpath
     end 
-  | path -> 
-    Server.respond_with_string ~code:`Not_found ("Not found: " ^ path)
+  | path -> not_found path
 
 let command =
   Command.async_basic
