@@ -54,7 +54,8 @@ let valid_path ~root path =
       | _, _ -> false
     in loop Filename.(parts root, parts path)
   with Unix.Unix_error (_, _, _) -> 
-    printf "Could not find %s in %s\n" path root; false
+    if path <> "favicon.ico" then
+      printf "Could not find %s in %s\n" path root; false
 
 let not_found path =
   Server.respond_with_string ~code:`Not_found ("Not found: " ^ path)
@@ -78,7 +79,7 @@ let handler ~root ~body:_ sock req =
 
 let command =
   Command.async_basic
-    ~summary:"Share directory with cohttp"
+    ~summary:"Serve a directory's contents using cohttp"
     Command.Spec.(
       empty
       +> flag "-port" (optional_with_default 8080 int)

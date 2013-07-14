@@ -1,2 +1,2 @@
-true: package(core, cohttp.async)
-true: thread, debug
+true: package(core, core_extended, cohttp.async)
+true: thread

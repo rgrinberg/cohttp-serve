@@ -15,4 +15,4 @@ opaminstall:
 	cp cohttp_serve.native $(BINDIR)/cohttp_serve
 
 opam uninstall:
-	rm -f $(BINDIR)/cohtt_serve
+	rm -f $(BINDIR)/cohttp_serve
